@@ -5,7 +5,7 @@ function eval() {
 
 function expressionCalculator(expr) {
     let result = 0;
-    const RegexAll = /[+*/\-]/;
+    const RegexAll = /[+*/\-]/g;
     const RegexFirst = /[\\*\\/]/;
     const RegexSecond = /[+-]/;
     const RegexBracket = /[()]/;
@@ -20,23 +20,31 @@ function expressionCalculator(expr) {
     if (operator[0] == '-') {
         result = +buf[0] - (+buf[1]);
     }
-    if (operator[0] == '/' ) {
-        if(buf[1]==0)
-        throw "TypeError: Division by zero.";
-        result =  +buf[0] / (+buf[1]);
+    if (operator[0] == '/') {
+        if (buf[1] == 0)
+            throw "TypeError: Division by zero.";
+        result = +buf[0] / (+buf[1]);
     }
     if (operator[0] == '*') {
         result = +buf[0] * (+buf[1]);
     }
 
-    //result = +buf.join('');
-    // result = +buf1.join('');
-    // result = +buf2.join('');
-    // for (let i = 0; i < buf.length; ++i) {
-    //     if(){
-
-    //     }
-    // }
+    for (let i = 1; i < operator.length; ++i) {
+        if (operator[i] == '+') {
+            result = result + (+buf[i + 1]);
+        }
+        if (operator[i] == '-') {
+            result = result - (+buf[i + 1]);
+        }
+        if (operator[i] == '/') {
+            if (buf[1] == 0)
+                throw "TypeError: Division by zero.";
+            result = result / (+buf[i + 1]);
+        }
+        if (operator[i] == '*') {
+            result = result * (+buf[i + 1]);
+        }
+    }
     // if(expr=="2+2"){
     //     return 4;
     // }
