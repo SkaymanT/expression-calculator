@@ -12,44 +12,51 @@ function expressionCalculator(expr) {
     expr = expr.replace(/\s/g, '');
     let operator = expr.match(RegexAll);
     let buf = expr.split(RegexAll);
-    let buf1 = expr.split(RegexSecond);
-    let buf2 = expr.split(RegexBracket);
-    if (operator[0] == '+') {
-        result = +buf[0] + (+buf[1]);
-    }
-    if (operator[0] == '-') {
-        result = +buf[0] - (+buf[1]);
-    }
-    if (operator[0] == '/') {
-        if (buf[1] == 0)
-            throw "TypeError: Division by zero.";
-        result = +buf[0] / (+buf[1]);
-    }
-    if (operator[0] == '*') {
-        result = +buf[0] * (+buf[1]);
+    //let buf1 = expr.split(RegexSecond);
+    //let buf2 = expr.split(RegexBracket);
+    for (let i = 0; i < operator.length; i) {
+        if (operator[i] == '/') {
+            if (buf[i+1] == 0) {
+                throw "TypeError: Division by zero.";
+            }
+            buf[i] = +buf[i] / (+buf[i + 1]);
+            buf.splice(i + 1, 1);
+            operator.splice(i, 1);
+        }
+        else if (operator[i] == '*') {
+            buf[i] = +buf[i] * (+buf[i + 1]);
+            buf.splice(i + 1, 1);
+            operator.splice(i, 1);
+        }
+        else{
+            ++i;
+        }
     }
 
-    for (let i = 1; i < operator.length; ++i) {
-        if (operator[i] == '+') {
-            result = result + (+buf[i + 1]);
-        }
+    for (let i = 0; i < operator.length; i) {
         if (operator[i] == '-') {
-            result = result - (+buf[i + 1]);
+            
+            buf[i] = +buf[i] - (+buf[i + 1]);
+            buf.splice(i + 1, 1);
+            operator.splice(i, 1);
         }
-        if (operator[i] == '/') {
-            if (buf[1] == 0)
-                throw "TypeError: Division by zero.";
-            result = result / (+buf[i + 1]);
+        else if (operator[i] == '+') {
+            buf[i] = +buf[i] + (+buf[i + 1]);
+            buf.splice(i + 1, 1);
+            operator.splice(i, 1);
         }
-        if (operator[i] == '*') {
-            result = result * (+buf[i + 1]);
+        else{
+            ++i;
         }
     }
+
+
+
     // if(expr=="2+2"){
     //     return 4;
     // }
 
-    return result;
+    return buf[0];
 }
 
 module.exports = {

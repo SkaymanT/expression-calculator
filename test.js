@@ -1,4 +1,4 @@
-const { expect } = require('chai');
+ const { expect } = require('chai');
 const { expressionCalculator } = require('./src/index.js');
 
 describe("Easy", function() {
