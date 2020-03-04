@@ -4,18 +4,56 @@ function eval() {
 }
 
 function expressionCalculator(expr) {
-    let result = 0;
     const RegexAll = /[+*/\-]/g;
-    const RegexBracket = /[()]/;
+    const RegexBracket = /[()]/g;
     expr = expr.replace(/\s/g, '');
+    let brackets = expr.match(RegexBracket);
     let operator = expr.match(RegexAll);
     let buf = expr.split(RegexAll);
-    let bracket = expr.match(RegexBracket);
-    if (!(bracket == null)) {
-        if ((bracket.length % 2) == 1) {
+    let bracketOpen = 0;
+    let bracketClose = 0;
+    if (!(brackets == null)) {
+        for (let i = 0; i < brackets.length; ++i) {
+            if (brackets[i] == "(") {
+                ++bracketOpen;
+            }
+            if (brackets[i] == ")") {
+                bracketClose++;
+            }
+        }
+        if (bracketOpen != bracketClose) {
             throw "ExpressionError: Brackets must be paired";
         }
     }
+    if (!(brackets == null)) {
+        for (let l = 0; l < brackets.length; l=+2) {
+            for (let i = 0; i < expr.length; ++i) {
+                if (expr[i] == ')') {
+                    for (let j = i; j >= 0; --j) {
+                        if (expr[j] == '(') {
+                            let bufexpr = expr.substring(j + 1, i);
+                            let prebufexpr = expr.substring(0, j);
+                            if ((i + 1) == expr.length) {
+                                let bufres = expressionCalculator(bufexpr);
+                                expr = prebufexpr + bufres;
+                                break;
+                            } else {
+                                let bufres = expressionCalculator(bufexpr);
+                                let nextbufexpr = expr.substring(i + 1, expr.length);
+                                expr = prebufexpr +  bufres + nextbufexpr;
+                                break;
+                            }
+                        } else if (j == 0) {
+                            throw "ExpressionError: Brackets must be paired";
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+    //operator = expr.match(RegexAll);
+    buf = expr.split(RegexAll);
     for (let i = 0; i < operator.length; i) {
         if (operator[i] == '/') {
             if (buf[i + 1] == 0) {
@@ -35,7 +73,6 @@ function expressionCalculator(expr) {
 
     for (let i = 0; i < operator.length; i) {
         if (operator[i] == '-') {
-
             buf[i] = +buf[i] - (+buf[i + 1]);
             buf.splice(i + 1, 1);
             operator.splice(i, 1);
@@ -54,3 +91,6 @@ function expressionCalculator(expr) {
 module.exports = {
     expressionCalculator
 }
+
+let expr = " 85 * 97 / (  89 / 11 - 18 * 96  ) - 61 ";
+expressionCalculator(expr);
