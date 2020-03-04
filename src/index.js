@@ -26,7 +26,7 @@ function expressionCalculator(expr) {
         }
     }
     if (!(brackets == null)) {
-        for (let l = 0; l < brackets.length; l=+2) {
+        for (let l = 0; l < brackets.length; l = +2) {
             for (let i = 0; i < expr.length; ++i) {
                 if (expr[i] == ')') {
                     for (let j = i; j >= 0; --j) {
@@ -40,7 +40,7 @@ function expressionCalculator(expr) {
                             } else {
                                 let bufres = expressionCalculator(bufexpr);
                                 let nextbufexpr = expr.substring(i + 1, expr.length);
-                                expr = prebufexpr +  bufres + nextbufexpr;
+                                expr = prebufexpr + bufres + nextbufexpr;
                                 break;
                             }
                         } else if (j == 0) {
@@ -52,7 +52,8 @@ function expressionCalculator(expr) {
             }
         }
     }
-    //operator = expr.match(RegexAll);
+    operator = expr.match(RegexAll);
+    brackets = expr.match(RegexBracket);
     buf = expr.split(RegexAll);
     for (let i = 0; i < operator.length; i) {
         if (operator[i] == '/') {
@@ -88,9 +89,45 @@ function expressionCalculator(expr) {
     return buf[0];
 }
 
+function searchOperator(expr) {
+    let operators = [];
+    let j = 0;
+    for (let i = 0; i < expr.length; i++) {
+        if (expr[i] == "*" || expr[i] == "/" || expr[i] == "+" || (expr[i] == "-" && i != 0)) {
+            if (!(expr[i] == "-" && (expr[i - 1] == "*" || expr[i - 1] == "/" || expr[i - 1] == "+" || expr[i - 1] == "-"))) {
+                operators[j++] = expr[i];
+            }
+        }
+    }
+
+    return operators;
+}
+
+function searchNumber(expr) {
+    let Numbers = [];
+    let j = 0;
+    let prev = 0;
+    for (let i = 0; i < expr.length; i++) {
+        if (expr[i] == "*" || expr[i] == "/" || expr[i] == "+" || (expr[i] == "-" && i != 0) || i == expr.length - 1) {
+            if (!(expr[i] == "-" && (expr[i - 1] == "*" || expr[i - 1] == "/" || expr[i - 1] == "+" || expr[i - 1] == "-")) || i == expr.length - 1) {
+                if (i == expr.length - 1) {
+                    Numbers[j++] = expr.substring(prev, i);
+                } else {
+                    Numbers[j++] = expr.substring(prev, i);
+                    prev = i + 1;
+                }
+            }
+        }
+    }
+    return Numbers;
+}
+
 module.exports = {
     expressionCalculator
 }
 
 let expr = " 85 * 97 / (  89 / 11 - 18 * 96  ) - 61 ";
-expressionCalculator(expr);
+let expr1 = "-85-97*-9/-12";
+let buf = searchOperator(expr1);
+let buf1 = searchNumber(expr1);
+//expressionCalculator(expr);
