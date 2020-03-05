@@ -4,12 +4,11 @@ function eval() {
 }
 
 function expressionCalculator(expr) {
-    const RegexAll = /[+*/\-]/g;
     const RegexBracket = /[()]/g;
     expr = expr.replace(/\s/g, '');
     let brackets = expr.match(RegexBracket);
-    let operator = expr.match(RegexAll);
-    let buf = expr.split(RegexAll);
+    let operator = searchOperator(expr);
+    let buf = searchNumber(expr);
     let bracketOpen = 0;
     let bracketClose = 0;
     if (!(brackets == null)) {
@@ -52,9 +51,10 @@ function expressionCalculator(expr) {
             }
         }
     }
-    operator = expr.match(RegexAll);
+    operator = searchOperator(expr);
+    buf = searchNumber(expr);
     brackets = expr.match(RegexBracket);
-    buf = expr.split(RegexAll);
+
     for (let i = 0; i < operator.length; i) {
         if (operator[i] == '/') {
             if (buf[i + 1] == 0) {
@@ -111,7 +111,7 @@ function searchNumber(expr) {
         if (expr[i] == "*" || expr[i] == "/" || expr[i] == "+" || (expr[i] == "-" && i != 0) || i == expr.length - 1) {
             if (!(expr[i] == "-" && (expr[i - 1] == "*" || expr[i - 1] == "/" || expr[i - 1] == "+" || expr[i - 1] == "-")) || i == expr.length - 1) {
                 if (i == expr.length - 1) {
-                    Numbers[j++] = expr.substring(prev, i);
+                    Numbers[j++] = expr.substring(prev);
                 } else {
                     Numbers[j++] = expr.substring(prev, i);
                     prev = i + 1;
@@ -126,8 +126,8 @@ module.exports = {
     expressionCalculator
 }
 
-let expr = " 85 * 97 / (  89 / 11 - 18 * 96  ) - 61 ";
-let expr1 = "-85-97*-9/-12";
-let buf = searchOperator(expr1);
-let buf1 = searchNumber(expr1);
+let expr = " (  38 + 52 + 65 - 19  ) * (  72 * 3 / 36 * (  9 / 2 - 17 * 38 / 28  )  ) / 18 / 84 ";
+//let expr1 = "-85-97*-9/-12";
+//let buf = searchOperator(expr);
+//let buf1 = searchNumber(expr);
 //expressionCalculator(expr);
