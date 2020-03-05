@@ -25,7 +25,7 @@ function expressionCalculator(expr) {
         }
     }
     if (!(brackets == null)) {
-        for (let l = 0; l < brackets.length; l = +2) {
+
             for (let i = 0; i < expr.length; ++i) {
                 if (expr[i] == ')') {
                     for (let j = i; j >= 0; --j) {
@@ -35,11 +35,13 @@ function expressionCalculator(expr) {
                             if ((i + 1) == expr.length) {
                                 let bufres = expressionCalculator(bufexpr);
                                 expr = prebufexpr + bufres;
+                                i=0;
                                 break;
                             } else {
                                 let bufres = expressionCalculator(bufexpr);
                                 let nextbufexpr = expr.substring(i + 1, expr.length);
                                 expr = prebufexpr + bufres + nextbufexpr;
+                                i=0;
                                 break;
                             }
                         } else if (j == 0) {
@@ -49,7 +51,6 @@ function expressionCalculator(expr) {
                     }
                 }
             }
-        }
     }
     operator = searchOperator(expr);
     buf = searchNumber(expr);
@@ -126,7 +127,7 @@ module.exports = {
     expressionCalculator
 }
 
-let expr = " (  38 + 52 + 65 - 19  ) * (  72 * 3 / 36 * (  9 / 2 - 17 * 38 / 28  )  ) / 18 / 84 ";
+//const expr = " 93 * 30 / 81 * (  78 * 83 / (  71 * 13 - (  14 + 13 - 28 * 62  ) * 62  ) + 99 - (  80 - 89 + 17 * 42  )  ) ";
 //let expr1 = "-85-97*-9/-12";
 //let buf = searchOperator(expr);
 //let buf1 = searchNumber(expr);
